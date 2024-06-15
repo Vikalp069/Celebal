@@ -1,0 +1,203 @@
+Networking Resources
+
+Azure Virtual Network is a service that provides the fundamental building block for your private network in Azure. An instance of the service (a virtual network) enables many types of Azure resources to securely communicate with each other, the internet, and on-premises networks. These Azure resources include virtual machines (VMs).
+A virtual network is similar to a traditional network that you'd operate in your own datacenter. But it brings extra benefits of the Azure infrastructure, such as scale, availability, and isolation.
+
+Part A: Create a VNet with 2 Subnets
+Create a Resource Group:
+
+sh
+Copy code
+az group create --name MyResourceGroup --location eastus
+Create a VNet with 2 Subnets:
+
+sh
+Copy code
+az network vnet create \
+  --name MyVnet \
+  --resource-group MyResourceGroup \
+  --location eastus \
+  --address-prefix 10.0.0.0/16 \
+  --subnet-name Subnet-1 \
+  --subnet-prefix 10.0.1.0/24
+
+az network vnet subnet create \
+  --resource-group MyResourceGroup \
+  --vnet-name MyVnet \
+  --name Subnet-2 \
+  --address-prefix 10.0.2.0/24
+Create Linux VM in Subnet-1:
+
+sh
+Copy code
+az vm create \
+  --resource-group MyResourceGroup \
+  --name LinuxVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --vnet-name MyVnet \
+  --subnet Subnet-1
+Create Windows VM in Subnet-1:
+
+sh
+Copy code
+az vm create \
+  --resource-group MyResourceGroup \
+  --name WindowsVM \
+  --image Win2019Datacenter \
+  --admin-username azureuser \
+  --admin-password myP@ssw0rd!23 \
+  --vnet-name MyVnet \
+  --subnet Subnet-1
+Create SQL Database in Subnet-2 (Azure SQL Database cannot be directly associated with a subnet but for illustrative purposes, assuming a SQL Server on a VM):
+
+sh
+Copy code
+az vm create \
+  --resource-group MyResourceGroup \
+  --name SQLVM \
+  --image sql2019-latest \
+  --admin-username azureuser \
+  --admin-password myP@ssw0rd!23 \
+  --vnet-name MyVnet \
+  --subnet Subnet-2
+Part B: Create 4 VNets and Configure Hub-and-Spoke Architecture
+Create Management VNet (Hub):
+
+sh
+Copy code
+az network vnet create \
+  --name ManagementVnet \
+  --resource-group MyResourceGroup \
+  --address-prefix 10.1.0.0/16 \
+  --subnet-name default \
+  --subnet-prefix 10.1.0.0/24
+Create Production VNet:
+
+sh
+Copy code
+az network vnet create \
+  --name ProductionVnet \
+  --resource-group MyResourceGroup \
+  --address-prefix 10.2.0.0/16 \
+  --subnet-name default \
+  --subnet-prefix 10.2.0.0/24
+Create Testing VNet:
+
+sh
+Copy code
+az network vnet create \
+  --name TestingVnet \
+  --resource-group MyResourceGroup \
+  --address-prefix 10.3.0.0/16 \
+  --subnet-name default \
+  --subnet-prefix 10.3.0.0/24
+Create Developing VNet:
+
+sh
+Copy code
+az network vnet create \
+  --name DevelopingVnet \
+  --resource-group MyResourceGroup \
+  --address-prefix 10.4.0.0/16 \
+  --subnet-name default \
+  --subnet-prefix 10.4.0.0/24
+Create Peering Connections:
+
+sh
+Copy code
+# Peering ManagementVnet (Hub) with ProductionVnet
+az network vnet peering create \
+  --name ManagementToProduction \
+  --resource-group MyResourceGroup \
+  --vnet-name ManagementVnet \
+  --remote-vnet ProductionVnet \
+  --allow-vnet-access
+
+az network vnet peering create \
+  --name ProductionToManagement \
+  --resource-group MyResourceGroup \
+  --vnet-name ProductionVnet \
+  --remote-vnet ManagementVnet \
+  --allow-vnet-access
+
+# Peering ManagementVnet (Hub) with TestingVnet
+az network vnet peering create \
+  --name ManagementToTesting \
+  --resource-group MyResourceGroup \
+  --vnet-name ManagementVnet \
+  --remote-vnet TestingVnet \
+  --allow-vnet-access
+
+az network vnet peering create \
+  --name TestingToManagement \
+  --resource-group MyResourceGroup \
+  --vnet-name TestingVnet \
+  --remote-vnet ManagementVnet \
+  --allow-vnet-access
+
+# Peering ManagementVnet (Hub) with DevelopingVnet
+az network vnet peering create \
+  --name ManagementToDeveloping \
+  --resource-group MyResourceGroup \
+  --vnet-name ManagementVnet \
+  --remote-vnet DevelopingVnet \
+  --allow-vnet-access
+
+az network vnet peering create \
+  --name DevelopingToManagement \
+  --resource-group MyResourceGroup \
+  --vnet-name DevelopingVnet \
+  --remote-vnet ManagementVnet \
+  --allow-vnet-access
+Launch VMs in Each VNet:
+
+Management VNet:
+
+sh
+Copy code
+az vm create \
+  --resource-group MyResourceGroup \
+  --name ManagementVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --vnet-name ManagementVnet \
+  --subnet default
+Production VNet:
+
+sh
+Copy code
+az vm create \
+  --resource-group MyResourceGroup \
+  --name ProductionVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --vnet-name ProductionVnet \
+  --subnet default
+Testing VNet:
+
+sh
+Copy code
+az vm create \
+  --resource-group MyResourceGroup \
+  --name TestingVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --vnet-name TestingVnet \
+  --subnet default
+Developing VNet:
+
+sh
+Copy code
+az vm create \
+  --resource-group MyResourceGroup \
+  --name DevelopingVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --vnet-name DevelopingVnet \
+  --subnet default
