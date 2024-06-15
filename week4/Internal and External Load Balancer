@@ -1,0 +1,165 @@
+Create a Internal and External Load Balancer
+
+Part 1: Create Internal Load Balancer
+Create a Resource Group:
+
+sh
+Copy code
+az group create --name MyResourceGroup --location eastus
+Create a Virtual Network and Subnet:
+
+sh
+Copy code
+az network vnet create \
+  --name MyVnet \
+  --resource-group MyResourceGroup \
+  --location eastus \
+  --address-prefix 10.0.0.0/16 \
+  --subnet-name MySubnet \
+  --subnet-prefix 10.0.1.0/24
+Create Network Interface Cards (NICs):
+
+sh
+Copy code
+az network nic create \
+  --resource-group MyResourceGroup \
+  --name MyNic1 \
+  --vnet-name MyVnet \
+  --subnet MySubnet
+
+az network nic create \
+  --resource-group MyResourceGroup \
+  --name MyNic2 \
+  --vnet-name MyVnet \
+  --subnet MySubnet
+Create Virtual Machines:
+
+sh
+Copy code
+az vm create \
+  --resource-group MyResourceGroup \
+  --name MyVM1 \
+  --nics MyNic1 \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --generate-ssh-keys
+
+az vm create \
+  --resource-group MyResourceGroup \
+  --name MyVM2 \
+  --nics MyNic2 \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --generate-ssh-keys
+Create an Internal Load Balancer:
+
+sh
+Copy code
+az network lb create \
+  --resource-group MyResourceGroup \
+  --name MyInternalLoadBalancer \
+  --vnet-name MyVnet \
+  --subnet MySubnet \
+  --frontend-ip-name MyFrontEndIP \
+  --private-ip-address 10.0.1.10 \
+  --backend-pool-name MyBackEndPool
+Create a Health Probe:
+
+sh
+Copy code
+az network lb probe create \
+  --resource-group MyResourceGroup \
+  --lb-name MyInternalLoadBalancer \
+  --name MyHealthProbe \
+  --protocol tcp \
+  --port 80
+Create a Load Balancer Rule:
+
+sh
+Copy code
+az network lb rule create \
+  --resource-group MyResourceGroup \
+  --lb-name MyInternalLoadBalancer \
+  --name MyLoadBalancerRule \
+  --protocol tcp \
+  --frontend-port 80 \
+  --backend-port 80 \
+  --frontend-ip-name MyFrontEndIP \
+  --backend-pool-name MyBackEndPool \
+  --probe-name MyHealthProbe
+Associate NICs to the Load Balancer Backend Pool:
+
+sh
+Copy code
+az network nic ip-config address-pool add \
+  --resource-group MyResourceGroup \
+  --nic-name MyNic1 \
+  --ip-config-name ipconfig1 \
+  --lb-name MyInternalLoadBalancer \
+  --address-pool MyBackEndPool
+
+az network nic ip-config address-pool add \
+  --resource-group MyResourceGroup \
+  --nic-name MyNic2 \
+  --ip-config-name ipconfig1 \
+  --lb-name MyInternalLoadBalancer \
+  --address-pool MyBackEndPool
+Part 2: Create External Load Balancer
+Create Public IP Address:
+
+sh
+Copy code
+az network public-ip create \
+  --resource-group MyResourceGroup \
+  --name MyPublicIP
+Create an External Load Balancer:
+
+sh
+Copy code
+az network lb create \
+  --resource-group MyResourceGroup \
+  --name MyExternalLoadBalancer \
+  --public-ip-address MyPublicIP \
+  --frontend-ip-name MyFrontEndIP \
+  --backend-pool-name MyBackEndPool
+Create a Health Probe:
+
+sh
+Copy code
+az network lb probe create \
+  --resource-group MyResourceGroup \
+  --lb-name MyExternalLoadBalancer \
+  --name MyHealthProbe \
+  --protocol tcp \
+  --port 80
+Create a Load Balancer Rule:
+
+sh
+Copy code
+az network lb rule create \
+  --resource-group MyResourceGroup \
+  --lb-name MyExternalLoadBalancer \
+  --name MyLoadBalancerRule \
+  --protocol tcp \
+  --frontend-port 80 \
+  --backend-port 80 \
+  --frontend-ip-name MyFrontEndIP \
+  --backend-pool-name MyBackEndPool \
+  --probe-name MyHealthProbe
+Associate NICs to the Load Balancer Backend Pool:
+
+sh
+Copy code
+az network nic ip-config address-pool add \
+  --resource-group MyResourceGroup \
+  --nic-name MyNic1 \
+  --ip-config-name ipconfig1 \
+  --lb-name MyExternalLoadBalancer \
+  --address-pool MyBackEndPool
+
+az network nic ip-config address-pool add \
+  --resource-group MyResourceGroup \
+  --nic-name MyNic2 \
+  --ip-config-name ipconfig1 \
+  --lb-name MyExternalLoadBalancer \
+  --address-pool MyBackEndPool
