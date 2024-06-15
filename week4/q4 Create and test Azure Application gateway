@@ -1,0 +1,84 @@
+Create and test Azure Application gateway
+
+Step 1: Create a Resource Group
+sh
+Copy code
+az group create --name MyResourceGroup --location eastus
+Step 2: Create a Virtual Network and Subnet
+sh
+Copy code
+az network vnet create --resource-group MyResourceGroup --name MyVnet --address-prefix 10.0.0.0/16 --subnet-name MySubnet --subnet-prefix 10.0.1.0/24
+Step 3: Create a Public IP Address for the Application Gateway
+sh
+Copy code
+az network public-ip create --resource-group MyResourceGroup --name MyPublicIP
+Step 4: Create the Application Gateway
+sh
+Copy code
+az network application-gateway create \
+    --name MyAppGateway \
+    --location eastus \
+    --resource-group MyResourceGroup \
+    --vnet-name MyVnet \
+    --subnet MySubnet \
+    --capacity 2 \
+    --sku WAF_v2 \
+    --public-ip-address MyPublicIP \
+    --frontend-port 80 \
+    --http-settings-port 80 \
+    --http-settings-protocol Http \
+    --backend-pool-name MyBackendPool \
+    --servers <backend_server1_ip> <backend_server2_ip>
+Replace <backend_server1_ip> and <backend_server2_ip> with the private IP addresses of your backend servers.
+
+Step 5: Create Backend VMs (if not already available)
+sh
+Copy code
+az vm create --resource-group MyResourceGroup --name MyVM1 --image UbuntuLTS --admin-username azureuser --generate-ssh-keys --vnet-name MyVnet --subnet MySubnet
+az vm create --resource-group MyResourceGroup --name MyVM2 --image UbuntuLTS --admin-username azureuser --generate-ssh-keys --vnet-name MyVnet --subnet MySubnet
+Step 6: Install a Web Server on the Backend VMs
+SSH into each VM and install Nginx or Apache:
+
+sh
+Copy code
+ssh azureuser@<vm_ip_address>
+
+# Install Nginx
+sudo apt update
+sudo apt install nginx -y
+
+# or Install Apache
+sudo apt update
+sudo apt install apache2 -y
+Step 7: Configure Health Probes and Routing Rules
+Create a health probe:
+
+sh
+Copy code
+az network application-gateway probe create \
+    --resource-group MyResourceGroup \
+    --gateway-name MyAppGateway \
+    --name MyHealthProbe \
+    --protocol Http \
+    --path "/" \
+    --interval 30 \
+    --timeout 120 \
+    --unhealthy-threshold 3
+Create a routing rule:
+
+sh
+Copy code
+az network application-gateway rule create \
+    --resource-group MyResourceGroup \
+    --gateway-name MyAppGateway \
+    --name MyRoutingRule \
+    --http-listener MyAppGateway \
+    --rule-type Basic \
+    --http-settings MyAppGateway \
+    --backend-pool MyBackendPool
+Step 8: Test the Application Gateway
+Get the public IP address of the Application Gateway:
+sh
+Copy code
+az network public-ip show --resource-group MyResourceGroup --name MyPublicIP --query "{address: ipAddress}" --output tsv
+Open a web browser and navigate to the public IP address. You should see the default web page served by your backend VMs (Nginx or Apache).
