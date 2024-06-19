@@ -1,0 +1,79 @@
+Step 1: Create a Virtual Network
+Navigate to the Azure Portal: Azure Portal
+Create a Virtual Network:
+Search for "Virtual Networks" in the top search bar.
+Click "Create" and fill in the required details:
+Name: myVNet
+Region: Select a region close to you
+Address space: 10.0.0.0/16
+Create a subnet within the virtual network:
+Name: mySubnet
+Subnet address range: 10.0.0.0/24
+Review and create the virtual network.
+Step 2: Create Backend Servers (VMs)
+Create Virtual Machines:
+
+Navigate to "Virtual Machines" and click "Create."
+Configure the VM:
+Name: myVM1
+Region: Same as your virtual network
+Image: Ubuntu Server
+Size: Standard_B1s
+Authentication: SSH or password
+In the Networking tab, choose the virtual network (myVNet) and subnet (mySubnet) created earlier.
+Repeat to create myVM2.
+Install Web Server on VMs:
+
+SSH into each VM and install a web server (Apache or Nginx).
+For Apache:
+bash
+Copy code
+sudo apt update
+sudo apt install apache2 -y
+sudo ufw allow 'Apache'
+echo "Welcome to myVM1" | sudo tee /var/www/html/index.html   # Run on myVM1
+echo "Welcome to myVM2" | sudo tee /var/www/html/index.html   # Run on myVM2
+For Nginx:
+bash
+Copy code
+sudo apt update
+sudo apt install nginx -y
+sudo ufw allow 'Nginx HTTP'
+echo "Welcome to myVM1" | sudo tee /var/www/html/index.html   # Run on myVM1
+echo "Welcome to myVM2" | sudo tee /var/www/html/index.html   # Run on myVM2
+Step 3: Create an Azure Application Gateway
+Navigate to "Application Gateways":
+
+Click "Create" and fill in the details:
+Name: myAppGateway
+Region: Same as your VNet
+Tier: Standard_v2 or WAF_v2
+Virtual Network: Select myVNet
+Subnet: Create a new subnet (e.g., appGatewaySubnet with address range 10.0.1.0/24).
+Configure Frontend IP:
+
+Frontend IP address type: Public
+Create a new public IP address (e.g., myAppGatewayIP).
+Configure Backend Pools:
+
+Add backend pool:
+Name: myBackendPool
+Add backend targets: Select the NICs of myVM1 and myVM2.
+Configure Routing Rules:
+
+Add routing rule:
+Rule name: myRoutingRule
+Listener: Create a new listener with a basic HTTP settings.
+Backend target: Select myBackendPool.
+HTTP settings: Create new settings (e.g., myHttpSettings) with the default settings.
+Review and Create the Application Gateway.
+
+Step 4: Test the Application Gateway
+Get the Public IP of the Application Gateway:
+
+Go to the Application Gateway resource.
+Copy the public IP address from the Overview tab.
+Test Access:
+
+Open a web browser and navigate to the public IP address.
+You should see the responses from your backend VMs ("Welcome to myVM1" and "Welcome to myVM2") in a round-robin manner, indicating that the Application Gateway is successfully distributing traffic between the VMs
