@@ -1,0 +1,11 @@
+
+Install Azure Storage Explorer: Download from the Azure Storage Explorer website and install.
+Open Azure Storage Explorer: Launch the application.
+Add an Account: Click "Add an account" and sign in with your Azure credentials.
+Navigate to Storage Account: Expand your storage account in the left-hand pane.
+Create a Container: Right-click "Blob Containers" -> "Create Blob Container," name it, and set the access level.
+Open the Container: Select the created container.
+Upload a Blob: Click "Upload" or right-click -> "Upload Files," choose your file, and upload.
+Get Blob URL: Right-click the blob -> "Copy URL" for access.
+Check Access Level: Ensure the container's access level is suitable (private, blob, container).
+Access Blob: Use the copied URL to access the blob via browser or application.
