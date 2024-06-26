@@ -1,0 +1,37 @@
+Navigate to Storage Account:
+
+In the Azure Portal, go to your storage account.
+Access Keys:
+
+Under "Settings," click on "Access keys."
+Copy one of the access keys and the storage account name.
+Open Azure Storage Explorer:
+
+Launch the Azure Storage Explorer application.
+Add an Account:
+
+Click "Add an account" or the plug icon on the left sidebar.
+Select "Use a storage account name and key."
+Enter Credentials:
+
+Enter the storage account name and the copied access key.
+Connect:
+
+Click "Next" and then "Connect."
+Navigate to Blob Containers:
+
+Expand the connected storage account in the left-hand pane.
+Open a Container:
+
+Select a blob container to manage files.
+Upload a Blob:
+
+Click "Upload" or right-click -> "Upload Files" to upload a file.
+Access Blob:
+
+Right-click the uploaded blob, select "Copy URL," and use it to access the blob.
+
+
+
+
+
