@@ -1,0 +1,28 @@
+Upload a Blob
+Navigate to Storage Account:
+
+Go to the Azure Portal and open your storage account.
+Create a Container:
+
+In the left-hand menu, select "Containers."
+Click "+ Container" to create a new container.
+Provide a name for the container and set the access level (private, blob, or container).
+Upload a Blob:
+
+Open the newly created container.
+Click on "Upload" to upload a file.
+Select the file you want to upload from your local machine.
+Click "Upload" to complete the process.
+Access the Blob
+Get Blob URL:
+
+Navigate to the container where you uploaded the blob.
+Click on the blob to open its properties.
+Copy the URL from the "Blob URL" field.
+Access Blob:
+
+If the blob is publicly accessible (public access level set to blob or container), you can access it directly via the URL.
+For private blobs, you need to use Azure Storage SDKs, REST API, or generate a shared access signature (SAS) token for secure access.
+
+
+https://<your_storage_account>.blob.core.windows.net/<your_container>/<your_blob>
