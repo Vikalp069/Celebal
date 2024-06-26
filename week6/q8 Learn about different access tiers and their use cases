@@ -1,0 +1,8 @@
+Hot Tier: Optimized for data that is accessed frequently. Ideal for active data and applications.
+Cool Tier: Designed for data that is infrequently accessed and stored for at least 30 days. Suitable for short-term backups and disaster recovery data.
+Archive Tier: Intended for data that is rarely accessed and stored for at least 180 days. Best for long-term archival and compliance data.
+Use Cases:
+Hot: Frequently accessed web content, interactive datasets.
+Cool: Infrequent access data, short-term backup.
+Archive: Long-term backup, archival data, compliance records.
+Transitioning Data: You can transition data between tiers based on access patterns to optimize storage costs.
