@@ -1,0 +1,9 @@
+Navigate to Storage Account: In the Azure Portal, go to your storage account and select the blob container.
+
+Create Stored Access Policy: Under "Access policy," add a new policy with specific permissions (read, write, etc.) and an expiration date, then save.
+
+Generate SAS with Policy: Create a SAS linked to the stored access policy under the "Shared access signature" settings by selecting the policy identifier.
+
+Copy SAS Token: Copy the SAS token URL.
+
+Verify Access: Use the SAS token URL to access the blob and test the allowed actions to ensure they match the stored access policy permissions.
