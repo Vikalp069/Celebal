@@ -1,0 +1,41 @@
+Navigate to Storage Account:
+
+In the Azure Portal, go to your storage account.
+Generate SAS:
+
+Under "Settings," select "Shared access signature."
+Configure permissions (read, write, delete, etc.) and set the expiration time.
+Click "Generate SAS and connection string."
+Copy SAS Token:
+
+Copy the SAS token from the generated URL.
+Open Azure Storage Explorer:
+
+Launch Azure Storage Explorer.
+Add SAS Account:
+
+Click "Add an account" or the plug icon on the left sidebar.
+Select "Use a shared access signature (SAS) URI."
+Enter SAS URI:
+
+Paste the copied SAS token URI and click "Next."
+Connect:
+
+Click "Connect" to access the storage account with the SAS.
+Check Permissions:
+
+Try performing actions (upload, download, delete) in the blob container to verify the granted permissions.
+Access Blob with SAS:
+
+Use the SAS token in the blob URL to access it directly via a browser or application.
+sh
+Copy code
+https://<account_name>.blob.core.windows.net/<container_name>/<blob_name>?<sas_token>
+Verify Access Scope:
+
+Ensure that only the specified permissions and expiration times are in effect by testing the actions allowed by the SAS.
+
+
+
+
+
