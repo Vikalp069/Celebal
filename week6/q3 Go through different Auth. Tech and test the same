@@ -1,0 +1,62 @@
+Authentication Techniques
+Shared Key Authorization:
+
+Uses the storage account name and key for access.
+Suitable for admin access and development purposes.
+Shared Access Signatures (SAS):
+
+Provides temporary access to storage resources.
+You can specify permissions and expiration times.
+Azure Active Directory (Azure AD):
+
+Uses Azure AD credentials to access storage resources.
+Suitable for user-specific permissions and role-based access control.
+Anonymous Access:
+
+Publicly accessible blobs or containers.
+No authentication required, based on container-level settings.
+Testing Authentication Techniques
+Shared Key Authorization
+Get Storage Account Key:
+
+In the Azure Portal, navigate to your storage account.
+Under "Settings," select "Access keys" and copy one of the keys.
+Test Access (using Azure CLI):
+
+sh
+Copy code
+az storage blob upload --account-name <account_name> --account-key <account_key> --container-name <container_name> --name <blob_name> --file <file_path>
+Shared Access Signatures (SAS)
+Generate SAS Token:
+
+In the Azure Portal, navigate to your storage account.
+Under "Settings," select "Shared access signature."
+Configure the permissions and expiration time, then generate and copy the SAS token.
+Test Access (using URL):
+
+Construct the blob URL with the SAS token.
+sh
+Copy code
+https://<account_name>.blob.core.windows.net/<container_name>/<blob_name>?<sas_token>
+Azure Active Directory (Azure AD)
+Assign Roles:
+
+In the Azure Portal, navigate to your storage account.
+Under "Access control (IAM)," add a role assignment (e.g., Storage Blob Data Contributor) to a user or group.
+Test Access (using Azure CLI):
+
+sh
+Copy code
+az login
+az storage blob upload --account-name <account_name> --container-name <container_name> --name <blob_name> --file <file_path>
+Anonymous Access
+Set Public Access Level:
+
+In the Azure Portal, navigate to your storage account.
+Go to the container and set its public access level to "Blob" or "Container."
+Test Access:
+
+Access the blob directly via its URL.
+sh
+Copy code
+https://<account_name>.blob.core.windows.net/<container_name>/<blob_name>
