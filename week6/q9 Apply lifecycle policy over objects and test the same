@@ -1,0 +1,15 @@
+Navigate to Storage Account: In the Azure Portal, go to your storage account, then select "Lifecycle management" under "Data management."
+
+Add Rule: Create a new rule, set conditions (e.g., move blobs to Cool tier after 30 days, Archive tier after 90 days), and specify the scope (containers or specific blobs).
+
+Save Policy: Save and enable the policy.
+
+Verify Rule Application: Upload blobs and monitor their transition between tiers over time according to the lifecycle policy.
+
+Test Policy: Use Azure Storage Explorer or Azure Portal to check the tier of blobs after the specified conditions are met, ensuring they move to the correct tier.
+
+
+
+
+
+
