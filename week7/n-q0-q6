@@ -1,0 +1,73 @@
+0 Create a Custom Role and Assign to Users
+Azure Portal:
+
+Navigate to "Subscriptions".
+Select a subscription > "Access control (IAM)" > "Add custom role".
+Define the role name, description, and permissions.
+Assign the custom role to users by navigating to "Access control (IAM)" > "Add role assignment".
+Select the custom role, assign it to the user, and test by logging in as the user.
+
+1 Create a Virtual Machine (VM) and Virtual Network (VNet) from Azure CLI
+1.1 Create a Resource Group:
+az group create --name myResourceGroup --location eastus
+1.2 Create a Virtual Network:
+az network vnet create --resource-group myResourceGroup --name myVNet --subnet-name mySubnet
+1.3 Create a VM:
+az vm create --resource-group myResourceGroup --name myVM --image UbuntuLTS --admin-username azureuser --generate-ssh-keys
+
+2 Create and Assign a Policy at Subscription Level
+2.1 Create a Policy Definition:
+
+Azure Portal: Navigate to "Policy" > "Definitions" > "New policy definition".
+Define the policy parameters and rules.
+2.2 Assign the Policy:
+Navigate to "Policy" > "Assignments" > "Assign policy".
+Select the subscription and policy definition, configure parameters, and assign the policy.
+
+3 Create an Azure Key Vault and Store Secrets
+3.1 Create Key Vault:
+az keyvault create --name myKeyVault --resource-group myResourceGroup --location eastus
+3.2 Store a Secret:
+az keyvault secret set --vault-name myKeyVault --name mySecret --value "mySecretValue"
+
+4 Configure Access Policies for Key Vault
+4.1 Configure Access Policies:
+
+Azure Portal: Navigate to "Key Vaults" > select your key vault > "Access policies" > "Add Access Policy".
+Select the permissions for keys, secrets, and certificates, and assign to users or applications.
+
+5 Retrieve Secret from Key Vault using Azure CLI
+5.1 Retrieve Secret:
+az keyvault secret show --name mySecret --vault-name myKeyVault
+
+6 Create a VM from PowerShell
+6.1 PowerShell Script:
+
+# Connect to Azure
+Connect-AzAccount
+
+# Create Resource Group
+New-AzResourceGroup -Name "myResourceGroup" -Location "EastUS"
+
+# Create Virtual Network
+$vnet = New-AzVirtualNetwork -ResourceGroupName "myResourceGroup" -Location "EastUS" -Name "myVNet" -AddressPrefix "10.0.0.0/16"
+Add-AzVirtualNetworkSubnetConfig -Name "mySubnet" -AddressPrefix "10.0.1.0/24" -VirtualNetwork $vnet
+$vnet | Set-AzVirtualNetwork
+
+# Create Public IP
+$publicIp = New-AzPublicIpAddress -ResourceGroupName "myResourceGroup" -Location "EastUS" -Name "myPublicIP" -AllocationMethod Dynamic
+
+# Create NIC
+$nic = New-AzNetworkInterface -ResourceGroupName "myResourceGroup" -Location "EastUS" -Name "myNic" -SubnetId $vnet.Subnets[0].Id -PublicIpAddressId $publicIp.Id
+
+# Create VM Configuration
+$vmConfig = New-AzVMConfig -VMName "myVM" -VMSize "Standard_DS1_v2"
+$vmConfig = Set-AzVMOperatingSystem -VM $vmConfig -Linux -ComputerName "myVM" -Credential (Get-Credential) -DisablePasswordAuthentication
+$vmConfig = Set-AzVMSourceImage -VM $vmConfig -PublisherName "Canonical" -Offer "UbuntuServer" -Skus "18.04-LTS" -Version "latest"
+$vmConfig = Add-AzVMNetworkInterface -VM $vmConfig -Id $nic.Id
+
+# Create VM
+New-AzVM -ResourceGroupName "myResourceGroup" -Location "EastUS" -VM $vmConfig
+
+
+
