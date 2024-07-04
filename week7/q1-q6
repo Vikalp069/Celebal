@@ -1,0 +1,28 @@
+1 Observe Assigned Subscriptions:
+Azure Portal:
+Navigate to "Subscriptions" to view all subscriptions assigned to your account.
+Azure CLI:
+Use the command az account list --output table.
+
+2 Observe Azure Entra ID or Create Your Own Azure Entra ID in Personal Azure Account:
+Azure Portal:
+Navigate to "Azure Active Directory" to view the current directory.
+To create a new directory, select "Create a directory" and follow the prompts.
+
+3 Create Test Users and Groups:
+Azure Portal:
+Navigate to "Azure Active Directory" > "Users" > "New user" to create test users.
+To create groups, go to "Groups" > "New group".
+
+4 Assign an RBAC Role to User and Test:
+Azure Portal:
+Navigate to "Subscriptions" > select a subscription > "Access control (IAM)" > "Add role assignment".
+Choose a role, select the user, and test the permissions by logging in as that user.
+
+5 Create a Custom Role and Assign to Users and Test:
+Azure Portal:
+Navigate to "Subscriptions" > select a subscription > "Access control (IAM)" > "Add custom role".
+Define the permissions for the custom role, assign it to users, and test the role by logging in as those users.
+
+6 Observe Assigned Subscriptions:
+Repeat the first step to ensure that the changes made throughout the process are reflected in your subscriptions and RBAC assignments.
