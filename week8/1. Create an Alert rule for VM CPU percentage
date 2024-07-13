@@ -1,0 +1,50 @@
+1. Create an Alert Rule for VM CPU Percentage
+Criteria: CPU% More Than 80
+Action: Send an email alert
+
+Navigate to Alerts:
+
+Go to the Azure portal.
+Navigate to the Virtual Machine you want to monitor.
+Select "Monitoring" from the left-hand menu and then "Alerts".
+Create an Alert Rule:
+
+Click on "+ New alert rule".
+Under "Scope", select the target VM.
+Under "Condition", click on "Add condition".
+Choose the "Signal name" as "Percentage CPU".
+Set the criteria to "Greater than" and the threshold to "80".
+Action Group:
+
+Under "Actions", create or select an existing action group.
+Add an action to send an email when the alert is triggered.
+For the email action, ensure you add your email address.
+Define Alert Rule Details:
+
+Provide a name and description for the alert rule.
+Set the severity level (e.g., Severity 2 for critical alerts).
+Review and create the alert rule.
+2. Provision Backups in Backup Center
+Schedule a Daily Backup of VM at 3:00 AM Using Vault
+Create a Recovery Services Vault:
+
+Navigate to the Azure portal.
+Search for "Recovery Services vault" and create a new vault.
+Specify the Resource Group, Vault Name, and Region.
+Configure Backup:
+
+After creating the vault, go to the vault dashboard.
+Select "Backup" and choose "Azure" as the workload running on the VM.
+Select "Virtual Machine" and then choose the VM you want to back up.
+Create a Backup Policy:
+
+In the Backup Configuration, select "Create new" for the Backup policy.
+Set the "Backup schedule" to "Daily" and set the time to "3:00 AM".
+Configure the retention period. For example:
+Daily backups retained for 30 days.
+Weekly backups retained for 12 weeks.
+Monthly backups retained for 12 months.
+Enable Backup:
+
+Apply the policy and enable the backup for the VM.
+The backup will now be scheduled to run daily at 3:00 AM.
